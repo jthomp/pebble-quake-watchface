@@ -14,6 +14,12 @@
         "resources": {
             "media": [
                 {
+                    "file": "fonts/dpquake16",
+                    "name": "FONT_DP_QUAKE_12",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
                     "file": "data/dpquake.license",
                     "name": "TXT_DPQUAKE_LICENSE",
                     "targetPlatforms": null,
@@ -34,7 +40,7 @@
                 },
                 {
                     "file": "fonts/dpquake",
-                    "name": "FONT_DP_QUAKE_48",
+                    "name": "FONT_DP_QUAKE_44",
                     "targetPlatforms": null,
                     "type": "font"
                 }
@@ -44,10 +50,10 @@
         "targetPlatforms": [
             "basalt"
         ],
-        "uuid": "5fc43cc8-ecfe-4b86-8172-aa89e9c4ad31",
+        "uuid": "cc0c4447-1494-41fe-8690-ada881ca00e6",
         "watchapp": {
             "watchface": true
         }
     },
-    "version": "1.0.0"
+    "version": "1.2.0"
 }

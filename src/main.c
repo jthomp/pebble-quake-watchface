@@ -1,7 +1,8 @@
 /*
     Quake Watchface for Pebble Time
-    Version 1.0.0
-    By: Justin Thompson (Antillian)
+    Version 1.2
+    By: Justin Thompson
+    Twitter: @jthomp
     
     Quake (c) id Software. All rights reserved.
     
@@ -9,17 +10,31 @@
     
     Changelog:
     
-    Version 1.0.0 (08/01/2016):
+    Version 1.2 (08/02/2016):
+      - Add date.
+      - Add battery percentage.
+    
+    Version 1.1 (08/02/2016):
+      - Decrease font size from 48 to 44.
+    
+    Version 1.0 (08/01/2016):
       - Initial release.
 */
 
 #include <pebble.h>
+#include <string.h>
 
 static Window *s_main_window;
-static TextLayer *s_time_layer;
+static TextLayer *s_time_layer, *s_date_layer, *s_battery_layer;
 static BitmapLayer *s_background_layer;
 static GBitmap *s_background_bitmap;
-static GFont s_time_font;
+static GFont s_time_font, s_date_font, s_battery_font;
+static int s_battery_level;
+
+static void battery_callback(BatteryChargeState state) {
+  // Record the new battery level
+  s_battery_level = state.charge_percent;  
+}
 
 static void update_time() {
   // Get a tm structure
@@ -32,6 +47,21 @@ static void update_time() {
   
   // Display this time on the TextLayer
   text_layer_set_text(s_time_layer, s_buffer);
+  
+  // Copy date into the buffer from tm structure
+  static char d_buffer[16];
+  strftime(d_buffer, sizeof(d_buffer), "%m / %d", tick_time);
+  
+  // Display the date on the Date TextLayer
+  text_layer_set_text(s_date_layer, d_buffer);
+  
+  // Write the current battery percentage into a buffer
+  static char b_buffer[4];
+  snprintf(b_buffer, sizeof(b_buffer), "%d", s_battery_level);
+  strcat(b_buffer, "%");
+  
+  // Display the battery percentage on the Battery TextLayer
+  text_layer_set_text(s_battery_layer, b_buffer);
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -53,33 +83,71 @@ static void main_window_load(Window *window) {
   bitmap_layer_set_bitmap(s_background_layer, s_background_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_background_layer));
   
-  // Create the TextLayer with specific bounds
-  s_time_layer = text_layer_create(
-    GRect(0, PBL_IF_ROUND_ELSE(58, 52), bounds.size.w, 50)
-  );
-  
-  // Improve the layout to be more like a watchface
+  // Create the time TextLayer with specific bounds
+  s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(58, 52), bounds.size.w, 50));  
   text_layer_set_background_color(s_time_layer, GColorClear);
   text_layer_set_text_color(s_time_layer, GColorWhite);
   text_layer_set_text(s_time_layer, "00:00");
   text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
 
-  // Create GFont
-  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_48));
+  // Create GFont for Time
+  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_44));
   
-  // Apply to TextLayer
-  text_layer_set_font(s_time_layer, s_time_font);
-
-  // Add it as a child layer to the Window's root layer
+  // Add time TextLayer layer to the Window's root layer
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer)); 
+  
+  // Create date TextLayer
+  s_date_layer = text_layer_create(GRect(-6, 148, 144, 30));
+  text_layer_set_text_color(s_date_layer, GColorWhite);
+  text_layer_set_background_color(s_date_layer, GColorClear);
+  text_layer_set_text_alignment(s_date_layer, GTextAlignmentRight);
+  
+  // Create GFont for Date
+  s_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_12));  
+  
+  // Add date TextLayer to Window
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
+  
+  // Create the battery TextLayer
+  s_battery_layer = text_layer_create(GRect(6, 148, 144, 30));
+  text_layer_set_text_color(s_battery_layer, GColorWhite);
+  text_layer_set_background_color(s_battery_layer, GColorClear);
+  text_layer_set_text_alignment(s_battery_layer, GTextAlignmentLeft);
+  
+  // Add battery TextLayer to Window
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_battery_layer));
+  
+  // Create GFont for Battery
+  s_battery_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_12));
+  
+  // Apply GFont for Time to TextLayer
+  text_layer_set_font(s_time_layer, s_time_font);
+   
+  // Apply GFont for Date to TextLayer
+  text_layer_set_font(s_date_layer, s_date_font);
+  
+  // Apply GFont for Battery to TextLayer
+  text_layer_set_font(s_battery_layer, s_battery_font);
 }
 
 static void main_window_unload(Window *window) {
-  // Destroy TextLayer
+  // Destroy TextLayer for Time
   text_layer_destroy(s_time_layer);
   
-  // Unload GFont
+  // Destroy TextLayer for Date
+  text_layer_destroy(s_date_layer);
+  
+  // Destroy TextLayer for Battery
+  text_layer_destroy(s_battery_layer);
+  
+  // Unload GFont for Time
   fonts_unload_custom_font(s_time_font);
+  
+  // Unload GFont for Date
+  fonts_unload_custom_font(s_date_font);
+  
+  // Unload GFont for Battery
+  fonts_unload_custom_font(s_battery_font);
   
   // Destroy GBitmap
   gbitmap_destroy(s_background_bitmap);
@@ -108,6 +176,12 @@ static void init() {
 
   // Register with TickTimerService
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+  
+  // Register for battery level updates
+  battery_state_service_subscribe(battery_callback);
+  
+  // Ensure battery level is displayed from the start.
+  battery_callback(battery_state_service_peek());
 }
 
 static void deinit() {
