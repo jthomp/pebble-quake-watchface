@@ -1,0 +1,53 @@
+{
+    "author": "Antillian",
+    "dependencies": {},
+    "keywords": [],
+    "name": "quake",
+    "pebble": {
+        "capabilities": [
+            ""
+        ],
+        "displayName": "Quake",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "data/dpquake.license",
+                    "name": "TXT_DPQUAKE_LICENSE",
+                    "targetPlatforms": null,
+                    "type": "raw"
+                },
+                {
+                    "file": "images/QuakeLogoMenuIcon",
+                    "menuIcon": true,
+                    "name": "IMAGE_QUAKE_LOGO_MENU_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/QuakeLogo",
+                    "name": "IMAGE_QUAKE_LOGO",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "fonts/dpquake",
+                    "name": "FONT_DP_QUAKE_48",
+                    "targetPlatforms": null,
+                    "type": "font"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "basalt"
+        ],
+        "uuid": "5fc43cc8-ecfe-4b86-8172-aa89e9c4ad31",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "1.0.0"
+}
