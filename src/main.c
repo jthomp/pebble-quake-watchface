@@ -1,6 +1,6 @@
 /*
     Quake Watchface for Pebble Time
-    Version 1.2
+    Version 1.3
     By: Justin Thompson
     Twitter: @jthomp
     
