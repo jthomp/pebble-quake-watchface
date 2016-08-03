@@ -10,6 +10,9 @@
     
     Changelog:
     
+    Version 1.3 (08/02/2016):
+      - Decrease font size from 44 to 42.
+
     Version 1.2 (08/02/2016):
       - Add date.
       - Add battery percentage.
@@ -91,7 +94,7 @@ static void main_window_load(Window *window) {
   text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
 
   // Create GFont for Time
-  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_44));
+  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_42));
   
   // Add time TextLayer layer to the Window's root layer
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer)); 
