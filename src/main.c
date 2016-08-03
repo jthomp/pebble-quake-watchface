@@ -1,6 +1,6 @@
 /*
     Quake Watchface for Pebble Time
-    Version 1.3
+    Version 1.4
     By: Justin Thompson
     Twitter: @jthomp
     
@@ -9,6 +9,10 @@
     DPQuake TrueType font license should be included in this project.
     
     Changelog:
+    
+    Version 1.4 (08/03/3016):
+      - Add connectivity indicator.
+      - Move battery and date down a few pixels.
     
     Version 1.3 (08/02/2016):
       - Decrease font size from 44 to 42.
@@ -30,10 +34,20 @@
 
 static Window *s_main_window;
 static TextLayer *s_time_layer, *s_date_layer, *s_battery_layer;
-static BitmapLayer *s_background_layer;
-static GBitmap *s_background_bitmap;
+static BitmapLayer *s_background_layer, *s_bt_icon_layer;
+static GBitmap *s_background_bitmap, *s_bt_icon_bitmap;
 static GFont s_time_font, s_date_font, s_battery_font;
 static int s_battery_level;
+
+static void bluetooth_callback(bool connected) {
+  // Show icon if disconnected
+  layer_set_hidden(bitmap_layer_get_layer(s_bt_icon_layer), connected);
+  
+  if (!connected) {
+    // Alert the user.
+    vibes_double_pulse();
+  }
+}
 
 static void battery_callback(BatteryChargeState state) {
   // Record the new battery level
@@ -101,7 +115,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer)); 
   
   // Create date TextLayer
-  s_date_layer = text_layer_create(GRect(-6, 148, 144, 30));
+  s_date_layer = text_layer_create(GRect(-6, 152, 144, 30));
   text_layer_set_text_color(s_date_layer, GColorWhite);
   text_layer_set_background_color(s_date_layer, GColorClear);
   text_layer_set_text_alignment(s_date_layer, GTextAlignmentRight);
@@ -113,7 +127,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
   
   // Create the battery TextLayer
-  s_battery_layer = text_layer_create(GRect(6, 148, 144, 30));
+  s_battery_layer = text_layer_create(GRect(6, 152, 144, 30));
   text_layer_set_text_color(s_battery_layer, GColorWhite);
   text_layer_set_background_color(s_battery_layer, GColorClear);
   text_layer_set_text_alignment(s_battery_layer, GTextAlignmentLeft);
@@ -132,6 +146,17 @@ static void main_window_load(Window *window) {
   
   // Apply GFont for Battery to TextLayer
   text_layer_set_font(s_battery_layer, s_battery_font);
+  
+  // Create the Bluetooth icon GBitmap
+  s_bt_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NOT_CONNECTED_ICON);
+  
+  // Create the BitmapLayer to display the GBitmap
+  s_bt_icon_layer = bitmap_layer_create(GRect(36, 150, 18, 16));
+  bitmap_layer_set_bitmap(s_bt_icon_layer, s_bt_icon_bitmap);
+  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_bt_icon_layer));
+  
+  // Show the correct state of the BT connection from the start
+  bluetooth_callback(connection_service_peek_pebble_app_connection());
 }
 
 static void main_window_unload(Window *window) {
@@ -158,6 +183,10 @@ static void main_window_unload(Window *window) {
   
   // Destroy BitmapLayer
   bitmap_layer_destroy(s_background_layer);
+  
+  // Destroy BitmapLayer for the Bluetooth icon
+  gbitmap_destroy(s_bt_icon_bitmap);
+  bitmap_layer_destroy(s_bt_icon_layer);
 }
 
 static void init() {
@@ -186,6 +215,11 @@ static void init() {
   
   // Ensure battery level is displayed from the start.
   battery_callback(battery_state_service_peek());
+  
+  // Register for the Bluetooth connection updates
+  connection_service_subscribe((ConnectionHandlers) {
+    .pebble_app_connection_handler = bluetooth_callback
+  });
 }
 
 static void deinit() {
