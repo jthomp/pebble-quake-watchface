@@ -12,6 +12,7 @@
     
     Version 1.3 (08/02/2016):
       - Decrease font size from 44 to 42.
+      - Tweak position of time display.
 
     Version 1.2 (08/02/2016):
       - Add date.
@@ -87,7 +88,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, bitmap_layer_get_layer(s_background_layer));
   
   // Create the time TextLayer with specific bounds
-  s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(58, 52), bounds.size.w, 50));  
+  s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(64, 56), bounds.size.w, 50));  
   text_layer_set_background_color(s_time_layer, GColorClear);
   text_layer_set_text_color(s_time_layer, GColorWhite);
   text_layer_set_text(s_time_layer, "00:00");
