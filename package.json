@@ -14,41 +14,47 @@
         "resources": {
             "media": [
                 {
-                    "file": "images/bt-icon-not-connected-16.png",
-                    "name": "IMAGE_NOT_CONNECTED_ICON",
-                    "targetPlatforms": null,
-                    "type": "bitmap"
-                },
-                {
-                    "file": "fonts/dpquake16",
-                    "name": "FONT_DP_QUAKE_12",
-                    "targetPlatforms": null,
-                    "type": "font"
-                },
-                {
-                    "file": "data/dpquake.license",
+                    "file": "data/dpquake_license.txt",
                     "name": "TXT_DPQUAKE_LICENSE",
                     "targetPlatforms": null,
                     "type": "raw"
                 },
                 {
-                    "file": "images/QuakeLogoMenuIcon",
+                    "file": "fonts/dpquake16.ttf",
+                    "name": "FONT_DP_QUAKE_12",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/dpquake.ttf",
+                    "name": "FONT_DP_QUAKE_42",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "images/QuakeLogoMenuIcon.png",
                     "menuIcon": true,
                     "name": "IMAGE_QUAKE_LOGO_MENU_ICON",
                     "targetPlatforms": null,
                     "type": "bitmap"
                 },
                 {
-                    "file": "images/QuakeLogo",
+                    "file": "images/QuakeLogo.png",
                     "name": "IMAGE_QUAKE_LOGO",
                     "targetPlatforms": null,
                     "type": "bitmap"
                 },
                 {
-                    "file": "fonts/dpquake",
-                    "name": "FONT_DP_QUAKE_42",
+                    "file": "images/icon-charging-18.png",
+                    "name": "IMAGE_CHARGING_ICON",
                     "targetPlatforms": null,
-                    "type": "font"
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/bt-icon-not-connected-16.png",
+                    "name": "IMAGE_NOT_CONNECTED_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
                 }
             ]
         },
