@@ -14,16 +14,28 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/icon-not-connected-18.png",
+                    "name": "IMAGE_NOT_CONNECTED_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "fonts/dpquake14.ttf",
+                    "name": "FONT_DP_QUAKE_14",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
+                    "file": "images/Quake-Logo-resize-2.png",
+                    "name": "IMAGE_QUAKE_LOGO_2",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
                     "file": "data/dpquake_license.txt",
                     "name": "TXT_DPQUAKE_LICENSE",
                     "targetPlatforms": null,
                     "type": "raw"
-                },
-                {
-                    "file": "fonts/dpquake16.ttf",
-                    "name": "FONT_DP_QUAKE_12",
-                    "targetPlatforms": null,
-                    "type": "font"
                 },
                 {
                     "file": "fonts/dpquake.ttf",
@@ -49,12 +61,6 @@
                     "name": "IMAGE_CHARGING_ICON",
                     "targetPlatforms": null,
                     "type": "bitmap"
-                },
-                {
-                    "file": "images/bt-icon-not-connected-16.png",
-                    "name": "IMAGE_NOT_CONNECTED_ICON",
-                    "targetPlatforms": null,
-                    "type": "bitmap"
                 }
             ]
         },
@@ -62,10 +68,10 @@
         "targetPlatforms": [
             "basalt"
         ],
-        "uuid": "cc0c4447-1494-41fe-8690-ada881ca00e6",
+        "uuid": "68661e97-daa6-4523-a776-1a727a83ae35",
         "watchapp": {
             "watchface": true
         }
     },
-    "version": "1.3.0"
+    "version": "1.6.0"
 }

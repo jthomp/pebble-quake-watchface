@@ -1,6 +1,6 @@
 /*
-    Quake Watchface for Pebble Time
-    Version 1.5
+    Quake Watchface for Pebble
+    Version 1.6
     By: Justin Thompson
     Twitter: @jthomp
     
@@ -9,6 +9,12 @@
     DPQuake TrueType font license should be included in this project.
     
     Changelog:
+    
+    Version 1.6 (08/04/2016):
+      - Tweaked background.
+      - Tweaked charging icon position.
+      - Tweaked not connected icon position.
+      - Tweaked not connected icon size.
     
     Version 1.5 (08/04/2016):
       - Fix issue with battery percentage changing to 0 after a short time.
@@ -58,7 +64,7 @@ static void battery_callback(BatteryChargeState state) {
   layer_set_hidden(bitmap_layer_get_layer(s_charging_icon_layer), !state.is_charging);
   
   // Record the new battery level
-  s_battery_level = state.charge_percent;  
+  s_battery_level = state.charge_percent;
 }
 
 static void update_time() {
@@ -75,7 +81,7 @@ static void update_time() {
   
   // Copy date into the buffer from tm structure
   static char d_buffer[16];
-  strftime(d_buffer, sizeof(d_buffer), "%m / %d", tick_time);
+  strftime(d_buffer, sizeof(d_buffer), "%m/%d", tick_time);
   
   // Display the date on the Date TextLayer
   text_layer_set_text(s_date_layer, d_buffer);
@@ -97,9 +103,9 @@ static void main_window_load(Window *window) {
   // Get information about the window
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
-
+  
   // Create GBitmap
-  s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_QUAKE_LOGO);
+  s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_QUAKE_LOGO_2);  
   
   // Create BitmapLayer to display the GBitmap
   s_background_layer = bitmap_layer_create(bounds);
@@ -128,7 +134,7 @@ static void main_window_load(Window *window) {
   text_layer_set_text_alignment(s_date_layer, GTextAlignmentRight);
   
   // Create GFont for Date
-  s_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_12));  
+  s_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_14));  
   
   // Add date TextLayer to Window
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
@@ -143,7 +149,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_battery_layer));
   
   // Create GFont for Battery
-  s_battery_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_12));
+  s_battery_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_14));
   
   // Apply GFont for Time to TextLayer
   text_layer_set_font(s_time_layer, s_time_font);
@@ -158,7 +164,7 @@ static void main_window_load(Window *window) {
   s_bt_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NOT_CONNECTED_ICON);
   
   // Create the BitmapLayer to display the GBitmap for Bluetooth
-  s_bt_icon_layer = bitmap_layer_create(GRect(40, 150, 18, 16));
+  s_bt_icon_layer = bitmap_layer_create(GRect(45, 150, 18, 16));
   bitmap_layer_set_bitmap(s_bt_icon_layer, s_bt_icon_bitmap);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_bt_icon_layer));
   
@@ -169,7 +175,7 @@ static void main_window_load(Window *window) {
   s_charging_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHARGING_ICON);
   
   // Create the BitmapLayer to display the GBitmap for Charge state
-  s_charging_icon_layer = bitmap_layer_create(GRect(60, 150, 18, 18));
+  s_charging_icon_layer = bitmap_layer_create(GRect(65, 150, 18, 18));
   bitmap_layer_set_bitmap(s_charging_icon_layer, s_charging_icon_bitmap);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_charging_icon_layer));
   layer_set_hidden(bitmap_layer_get_layer(s_charging_icon_layer), true);
