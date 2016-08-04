@@ -1,12 +1,12 @@
 /*
-    Quake Watchface for Pebble
+    Quake Watchface for Pebble Time
     Version 1.6
-    By: Justin Thompson
+    By: Justin Thompson / Antillian
     Twitter: @jthomp
     
     Quake (c) id Software. All rights reserved.
     
-    DPQuake TrueType font license should be included in this project.
+    DPQuake TrueType font license included in this project.
     
     Changelog:
     
