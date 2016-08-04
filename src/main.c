@@ -1,6 +1,6 @@
 /*
     Quake Watchface for Pebble Time
-    Version 1.4
+    Version 1.5
     By: Justin Thompson
     Twitter: @jthomp
     
@@ -9,6 +9,10 @@
     DPQuake TrueType font license should be included in this project.
     
     Changelog:
+    
+    Version 1.5 (08/04/2016):
+      - Fix issue with battery percentage changing to 0 after a short time.
+      - Fix issue with charging indicator not showing up properly.
     
     Version 1.4 (08/03/3016):
       - Add connectivity indicator.
@@ -51,10 +55,10 @@ static void bluetooth_callback(bool connected) {
 }
 
 static void battery_callback(BatteryChargeState state) {
-  // Record the new battery level
-  s_battery_level = state.charge_percent;
-  
   layer_set_hidden(bitmap_layer_get_layer(s_charging_icon_layer), !state.is_charging);
+  
+  // Record the new battery level
+  s_battery_level = state.charge_percent;  
 }
 
 static void update_time() {
@@ -79,10 +83,10 @@ static void update_time() {
   // Write the current battery percentage into a buffer
   static char b_buffer[4];
   snprintf(b_buffer, sizeof(b_buffer), "%d", s_battery_level);
-  strcat(b_buffer, "%");
+  // strcat(b_buffer, "%");
   
   // Display the battery percentage on the Battery TextLayer
-  text_layer_set_text(s_battery_layer, b_buffer);
+  text_layer_set_text(s_battery_layer, b_buffer);  
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -154,7 +158,7 @@ static void main_window_load(Window *window) {
   s_bt_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NOT_CONNECTED_ICON);
   
   // Create the BitmapLayer to display the GBitmap for Bluetooth
-  s_bt_icon_layer = bitmap_layer_create(GRect(36, 150, 18, 16));
+  s_bt_icon_layer = bitmap_layer_create(GRect(40, 150, 18, 16));
   bitmap_layer_set_bitmap(s_bt_icon_layer, s_bt_icon_bitmap);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_bt_icon_layer));
   
@@ -165,12 +169,19 @@ static void main_window_load(Window *window) {
   s_charging_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHARGING_ICON);
   
   // Create the BitmapLayer to display the GBitmap for Charge state
-  s_charging_icon_layer = bitmap_layer_create(GRect(55, 150, 18, 18));
+  s_charging_icon_layer = bitmap_layer_create(GRect(60, 150, 18, 18));
   bitmap_layer_set_bitmap(s_charging_icon_layer, s_charging_icon_bitmap);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_charging_icon_layer));
+  layer_set_hidden(bitmap_layer_get_layer(s_charging_icon_layer), true);
 }
 
 static void main_window_unload(Window *window) {
+  
+  // Unsubscribe from our services.
+  tick_timer_service_unsubscribe();
+  battery_state_service_unsubscribe();
+  connection_service_unsubscribe();
+  
   // Destroy TextLayer for Time
   text_layer_destroy(s_time_layer);
   
