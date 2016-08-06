@@ -15,7 +15,7 @@
     
     Version 1.1 (08/05/2016):
       - Add faces for battery level, charging and not connected.
-      - Change battery level color if charge drops below 40%.
+      - Change battery level color if charge drops below 30%.
       - New face for not connected state.
       
     Version 1.0 (08/04/2016):
@@ -80,41 +80,19 @@ static void alloc_battery_images() {
 static void handle_battery_level() {
 
   if (s_connected) {
-    switch(s_battery_level) {
-      case 100:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[4]);
-        break;
-      case 90:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[4]);
-        break;
-      case 80:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[4]);
-        break;
-      case 70:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[3]);
-        break;
-      case 60:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[3]);
-        break;
-      case 50:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[3]);
-        break;
-      case 40:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[1]);
-        break;
-      case 30:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[1]);
-        break;
-      case 20:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[0]);
-        break;
-      case 10:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[0]);
-        break;
-      case 0:
-        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[0]);
-        break;
+
+    if (s_battery_level >= 80) {
+      bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[4]);   
+    } else if (s_battery_level < 80 && s_battery_level >= 60) {
+      bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[3]);
+    } else if (s_battery_level < 60 && s_battery_level >= 40) {
+      bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[2]);     
+    } else if (s_battery_level < 40 && s_battery_level >= 20 ) {
+      bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[1]);      
+    } else {
+      bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[0]);
     }
+    
   } else {
     bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[6]);
   }
