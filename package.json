@@ -14,8 +14,44 @@
         "resources": {
             "media": [
                 {
-                    "file": "images/icon-not-connected-18.png",
+                    "file": "images/icon-charging.png",
+                    "name": "IMAGE_CHARGING_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/icon-not-connected.png",
                     "name": "IMAGE_NOT_CONNECTED_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/icon-health-20.png",
+                    "name": "IMAGE_HEALTH_20_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/icon-health-40.png",
+                    "name": "IMAGE_HEALTH_40_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/icon-health-60.png",
+                    "name": "IMAGE_HEALTH_60_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/icon-health-80.png",
+                    "name": "IMAGE_HEALTH_80_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/icon-health-100.png",
+                    "name": "IMAGE_HEALTH_100_ICON",
                     "targetPlatforms": null,
                     "type": "bitmap"
                 },
@@ -55,12 +91,6 @@
                     "name": "IMAGE_QUAKE_LOGO",
                     "targetPlatforms": null,
                     "type": "bitmap"
-                },
-                {
-                    "file": "images/icon-charging-18.png",
-                    "name": "IMAGE_CHARGING_ICON",
-                    "targetPlatforms": null,
-                    "type": "bitmap"
                 }
             ]
         },
@@ -73,5 +103,5 @@
             "watchface": true
         }
     },
-    "version": "1.6.0"
+    "version": "1.0.0"
 }

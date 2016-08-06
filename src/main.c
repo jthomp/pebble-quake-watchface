@@ -1,43 +1,56 @@
 /*
     Quake Watchface for Pebble Time
-    Version 1.6
+    Version 1.1
     By: Justin Thompson / Antillian
     Twitter: @jthomp
     
-    Quake (c) id Software. All rights reserved.
-    
+    Quake® is a registered trademark of id Software, Inc.
+    Quake is Copyright © 1996-1997 id Software, Inc.    
+  
     DPQuake TrueType font license included in this project.
+    
+    =======================================================
     
     Changelog:
     
-    Version 1.6 (08/04/2016):
+    Version 1.1 (08/05/2016):
+      - Add faces for battery level, charging and not connected.
+      - Change battery level color if charge drops below 40%.
+      - New face for not connected state.
+      
+    Version 1.0 (08/04/2016):
+      - First public release.
+    
+    Version 0.7 (08/04/2016):
       - Tweaked background.
       - Tweaked charging icon position.
       - Tweaked not connected icon position.
       - Tweaked not connected icon size.
     
-    Version 1.5 (08/04/2016):
+    Version 0.6 (08/04/2016):
       - Fix issue with battery percentage changing to 0 after a short time.
       - Fix issue with charging indicator not showing up properly.
     
-    Version 1.4 (08/03/3016):
+    Version 0.5 (08/03/3016):
       - Add connectivity indicator.
       - Add charging indicator.
       - Move battery and date down a few pixels.
     
-    Version 1.3 (08/02/2016):
+    Version 0.4 (08/02/2016):
       - Decrease font size from 44 to 42.
       - Tweak position of time display.
 
-    Version 1.2 (08/02/2016):
+    Version 0.3 (08/02/2016):
       - Add date.
       - Add battery percentage.
     
-    Version 1.1 (08/02/2016):
+    Version 0.2 (08/02/2016):
       - Decrease font size from 48 to 44.
     
-    Version 1.0 (08/01/2016):
+    Version 0.1 (08/01/2016):
       - Initial release.
+
+    =======================================================
 */
 
 #include <pebble.h>
@@ -45,26 +58,98 @@
 
 static Window *s_main_window;
 static TextLayer *s_time_layer, *s_date_layer, *s_battery_layer;
-static BitmapLayer *s_background_layer, *s_bt_icon_layer, *s_charging_icon_layer;
-static GBitmap *s_background_bitmap, *s_bt_icon_bitmap, *s_charging_icon_bitmap;
+static BitmapLayer *s_background_layer, *s_health_icon_layer;
+static GBitmap *battery_images[7];
+static GBitmap *s_background_bitmap, *s_health_icon_bitmap;
 static GFont s_time_font, s_date_font, s_battery_font;
 static int s_battery_level;
+static bool s_charging, s_connected;
 
-static void bluetooth_callback(bool connected) {
-  // Show icon if disconnected
-  layer_set_hidden(bitmap_layer_get_layer(s_bt_icon_layer), connected);
+static void alloc_battery_images() {
+  battery_images[0] = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_HEALTH_20_ICON);
+  battery_images[1] = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_HEALTH_40_ICON);
+  battery_images[2] = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_HEALTH_60_ICON);
+  battery_images[3] = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_HEALTH_80_ICON);
+  battery_images[4] = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_HEALTH_100_ICON);
+  battery_images[5] = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHARGING_ICON);
+  battery_images[6] = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NOT_CONNECTED_ICON);
+}
+
+// Helper to change the Ranger face based on battery level.
+// The lower the level, the more "damage" the face takes.
+static void handle_battery_level() {
+
+  if (s_connected) {
+    switch(s_battery_level) {
+      case 100:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[4]);
+        break;
+      case 90:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[4]);
+        break;
+      case 80:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[4]);
+        break;
+      case 70:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[3]);
+        break;
+      case 60:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[3]);
+        break;
+      case 50:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[3]);
+        break;
+      case 40:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[1]);
+        break;
+      case 30:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[1]);
+        break;
+      case 20:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[0]);
+        break;
+      case 10:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[0]);
+        break;
+      case 0:
+        bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[0]);
+        break;
+    }
+  } else {
+    bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[6]);
+  }
   
-  if (!connected) {
-    // Alert the user.
-    vibes_double_pulse();
+  if (s_charging) {
+    bitmap_layer_set_bitmap(s_health_icon_layer, battery_images[5]);  
+  }
+  
+  if (s_battery_level < 30) {
+    text_layer_set_text_color(s_battery_layer, GColorRed);
+  } else {
+    text_layer_set_text_color(s_battery_layer, GColorWhite);
   }
 }
 
-static void battery_callback(BatteryChargeState state) {
-  layer_set_hidden(bitmap_layer_get_layer(s_charging_icon_layer), !state.is_charging);
+static void bluetooth_callback(bool connected) {
+  s_connected = connected;
   
+  if (!connected) {    
+    // Alert the user.
+    vibes_double_pulse();
+  }
+  
+  // Manually update the Ranger face here to make sure
+  // if we're connected, we update the face immediately.
+  handle_battery_level();
+}
+
+static void battery_callback(BatteryChargeState state) {
   // Record the new battery level
   s_battery_level = state.charge_percent;
+  
+  // Handle any changes to the battery level color and face
+  s_charging = state.is_charging;
+  handle_battery_level();
 }
 
 static void update_time() {
@@ -86,10 +171,11 @@ static void update_time() {
   // Display the date on the Date TextLayer
   text_layer_set_text(s_date_layer, d_buffer);
   
-  // Write the current battery percentage into a buffer
   static char b_buffer[4];
+  // Write the current battery percentage into a buffer
   snprintf(b_buffer, sizeof(b_buffer), "%d", s_battery_level);
-  // strcat(b_buffer, "%");
+  
+  handle_battery_level(false);
   
   // Display the battery percentage on the Battery TextLayer
   text_layer_set_text(s_battery_layer, b_buffer);  
@@ -140,7 +226,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
   
   // Create the battery TextLayer
-  s_battery_layer = text_layer_create(GRect(6, 152, 144, 30));
+  s_battery_layer = text_layer_create(GRect(25, 152, 144, 30));
   text_layer_set_text_color(s_battery_layer, GColorWhite);
   text_layer_set_background_color(s_battery_layer, GColorClear);
   text_layer_set_text_alignment(s_battery_layer, GTextAlignmentLeft);
@@ -160,25 +246,16 @@ static void main_window_load(Window *window) {
   // Apply GFont for Battery to TextLayer
   text_layer_set_font(s_battery_layer, s_battery_font);
   
-  // Create the Bluetooth icon GBitmap
-  s_bt_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NOT_CONNECTED_ICON);
-  
-  // Create the BitmapLayer to display the GBitmap for Bluetooth
-  s_bt_icon_layer = bitmap_layer_create(GRect(40, 152, 18, 16));
-  bitmap_layer_set_bitmap(s_bt_icon_layer, s_bt_icon_bitmap);
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_bt_icon_layer));
-  
   // Show the correct state of the BT connection from the start
   bluetooth_callback(connection_service_peek_pebble_app_connection());
   
-  // Create the Charging icon GBitmap
-  s_charging_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHARGING_ICON);
+  // Create the Health icon GBitmap
+  s_health_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_HEALTH_100_ICON);
   
-  // Create the BitmapLayer to display the GBitmap for Charge state
-  s_charging_icon_layer = bitmap_layer_create(GRect(60, 152, 18, 18));
-  bitmap_layer_set_bitmap(s_charging_icon_layer, s_charging_icon_bitmap);
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_charging_icon_layer));
-  layer_set_hidden(bitmap_layer_get_layer(s_charging_icon_layer), true);
+  // Create the BitmapLayer to display the GBitmap for Health
+  s_health_icon_layer = bitmap_layer_create(GRect(3, 152, 18, 16));
+  bitmap_layer_set_bitmap(s_health_icon_layer, s_health_icon_bitmap);
+  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_health_icon_layer));
 }
 
 static void main_window_unload(Window *window) {
@@ -212,13 +289,9 @@ static void main_window_unload(Window *window) {
   // Destroy BitmapLayer
   bitmap_layer_destroy(s_background_layer);
   
-  // Destroy BitmapLayer for the Bluetooth icon
-  gbitmap_destroy(s_bt_icon_bitmap);
-  bitmap_layer_destroy(s_bt_icon_layer);
-  
-  // Destroy BitmapLayer for the Charging icon
-  gbitmap_destroy(s_charging_icon_bitmap);
-  bitmap_layer_destroy(s_charging_icon_layer);
+  // Destroy BitmapLayer for the Health icon
+  gbitmap_destroy(s_health_icon_bitmap);
+  bitmap_layer_destroy(s_health_icon_layer);
 }
 
 static void init() {
@@ -252,6 +325,8 @@ static void init() {
   connection_service_subscribe((ConnectionHandlers) {
     .pebble_app_connection_handler = bluetooth_callback
   });
+  
+  alloc_battery_images();
 }
 
 static void deinit() {
