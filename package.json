@@ -14,6 +14,12 @@
         "resources": {
             "media": [
                 {
+                    "file": "fonts/dpquake16.ttf",
+                    "name": "FONT_DP_QUAKE_16",
+                    "targetPlatforms": null,
+                    "type": "font"
+                },
+                {
                     "file": "images/icon-charging.png",
                     "name": "IMAGE_CHARGING_ICON",
                     "targetPlatforms": null,
@@ -54,12 +60,6 @@
                     "name": "IMAGE_HEALTH_100_ICON",
                     "targetPlatforms": null,
                     "type": "bitmap"
-                },
-                {
-                    "file": "fonts/dpquake14.ttf",
-                    "name": "FONT_DP_QUAKE_14",
-                    "targetPlatforms": null,
-                    "type": "font"
                 },
                 {
                     "file": "images/Quake-Logo-resize-2.png",

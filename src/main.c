@@ -15,8 +15,9 @@
     
     Version 1.1 (08/05/2016):
       - Add faces for battery level, charging and not connected.
-      - Change battery level color if charge drops below 30%.
       - New face for not connected state.
+      - Change battery level color if charge drops below 30%.
+      - Increase font sizes for battery level and date.
       
     Version 1.0 (08/04/2016):
       - First public release.
@@ -153,7 +154,7 @@ static void update_time() {
   // Write the current battery percentage into a buffer
   snprintf(b_buffer, sizeof(b_buffer), "%d", s_battery_level);
   
-  handle_battery_level(false);
+  handle_battery_level();
   
   // Display the battery percentage on the Battery TextLayer
   text_layer_set_text(s_battery_layer, b_buffer);  
@@ -192,19 +193,19 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer)); 
   
   // Create date TextLayer
-  s_date_layer = text_layer_create(GRect(-6, 152, 144, 30));
+  s_date_layer = text_layer_create(GRect(-6, 150, 144, 30));
   text_layer_set_text_color(s_date_layer, GColorWhite);
   text_layer_set_background_color(s_date_layer, GColorClear);
   text_layer_set_text_alignment(s_date_layer, GTextAlignmentRight);
   
   // Create GFont for Date
-  s_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_14));  
+  s_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_16));  
   
   // Add date TextLayer to Window
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
   
   // Create the battery TextLayer
-  s_battery_layer = text_layer_create(GRect(25, 152, 144, 30));
+  s_battery_layer = text_layer_create(GRect(25, 150, 144, 30));
   text_layer_set_text_color(s_battery_layer, GColorWhite);
   text_layer_set_background_color(s_battery_layer, GColorClear);
   text_layer_set_text_alignment(s_battery_layer, GTextAlignmentLeft);
@@ -213,7 +214,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_battery_layer));
   
   // Create GFont for Battery
-  s_battery_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_14));
+  s_battery_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DP_QUAKE_16));
   
   // Apply GFont for Time to TextLayer
   text_layer_set_font(s_time_layer, s_time_font);
@@ -231,7 +232,7 @@ static void main_window_load(Window *window) {
   s_health_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_HEALTH_100_ICON);
   
   // Create the BitmapLayer to display the GBitmap for Health
-  s_health_icon_layer = bitmap_layer_create(GRect(3, 152, 18, 16));
+  s_health_icon_layer = bitmap_layer_create(GRect(3, 151, 18, 16));
   bitmap_layer_set_bitmap(s_health_icon_layer, s_health_icon_bitmap);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_health_icon_layer));
 }
