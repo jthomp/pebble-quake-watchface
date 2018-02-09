@@ -1,0 +1,37 @@
+Version 1.1 (08/05/2016):
+  - Add faces for battery level, charging and not connected.
+  - New face for not connected state.
+  - Change battery level color if charge drops below 30%.
+  - Increase font sizes for battery level and date.
+  
+Version 1.0 (08/04/2016):
+  - First public release.
+
+Version 0.7 (08/04/2016):
+  - Tweaked background.
+  - Tweaked charging icon position.
+  - Tweaked not connected icon position.
+  - Tweaked not connected icon size.
+
+Version 0.6 (08/04/2016):
+  - Fix issue with battery percentage changing to 0 after a short time.
+  - Fix issue with charging indicator not showing up properly.
+
+Version 0.5 (08/03/2016):
+  - Add connectivity indicator.
+  - Add charging indicator.
+  - Move battery and date down a few pixels.
+
+Version 0.4 (08/02/2016):
+  - Decrease font size from 44 to 42.
+  - Tweak position of time display.
+
+Version 0.3 (08/02/2016):
+  - Add date.
+  - Add battery percentage.
+
+Version 0.2 (08/02/2016):
+  - Decrease font size from 48 to 44.
+
+Version 0.1 (08/01/2016):
+  - Initial release.
